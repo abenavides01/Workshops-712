@@ -1,11 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const dontenv = require('dotenv');
+const dotenv = require('dotenv');
 const path = require('path');
 const expressLayout = require('express-ejs-layouts');
 const userRouter = require('./routes/userRoutes');
 
-dontenv.config();//inicialización de las const
+dotenv.config();//inicialización de las const
 
 const app = express();//inicialización de express
 const port = 3003;//variable constante

@@ -1,31 +1,53 @@
-<!-- Esto hereda de layout.ejs -->
-<h1 class="my-4">Lista de Usuarios</h1>
+<h1 class="my-4"><%= editUser ? 'Editar Usuario' : 'Lista de Usuarios' %></h1>
 
-<form action="/users" method="POST" class="mb-4">
+<!-- Formulario para crear o editar un usuario -->
+<form action="<%= editUser ? '/users/edit/' + editUser._id : '/users' %>" method="POST" class="mb-4">
     <div class="mb-3">
         <label for="name" class="form-label">Nombre</label>
-        <input type="text" name="name" id="name" class="form-control" placeholder="Nombre" required>
+        <input type="text" name="name" id="name" class="form-control" placeholder="Nombre" value="<%= editUser ? editUser.name : '' %>" required>
     </div>
     <div class="mb-3">
         <label for="email" class="form-label">Correo</label>
-        <input type="email" name="email" id="email" class="form-control" placeholder="Correo" required>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Correo" value="<%= editUser ? editUser.email : '' %>" required>
     </div>
     <div class="mb-3">
         <label for="age" class="form-label">Edad</label>
-        <input type="number" name="age" id="age" class="form-control" placeholder="Edad" required>
+        <input type="number" name="age" id="age" class="form-control" placeholder="Edad" value="<%= editUser ? editUser.age : '' %>" required>
     </div>
-    <button type="submit" class="btn btn-primary">Crear Usuario</button>
+    <button type="submit" class="btn btn-primary">
+        <%= editUser ? 'Actualizar Usuario' : 'Crear Usuario' %>
+    </button>
 </form>
 
 <h2>Usuarios Registrados</h2>
-<ul class="list-group">
-    <% if (users && users.length> 0) { %>
-        <% users.forEach(user=> { %>
-            <li class="list-group-item">
-                <%= user.name %> - <%= user.email %> - <%= user.age %>
-            </li>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Correo</th>
+            <th scope="col">Edad</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (users && users.length > 0) { %>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.name %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.age %></td>
+                    <td>
+                        <a href="/users/edit/<%= user._id %>" class="btn btn-warning btn-sm">Editar</a>
+                        <form action="/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
             <% }); %>
-                <% } else { %>
-                    <li class="list-group-item">No hay usuarios disponibles.</li>
-                    <% } %>
-</ul>
+        <% } else { %>
+            <tr>
+                <td colspan="4" class="text-center">No hay usuarios disponibles.</td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
