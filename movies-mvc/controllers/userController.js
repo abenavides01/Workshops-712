@@ -1,72 +1,75 @@
 const User = require('../models/userModel');
-const bcrypt = require('bcryptjs');
 
 // Obtener todos los usuarios
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
-        res.render('users', { title: 'Usuarios Registrados', users, editUser: null });
+        res.render('users', { title: 'Usuarios Registrados', users });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al obtener los usuarios');
     }
 };
 
-// Mostrar formulario de registro
-exports.showRegisterForm = (req, res) => {
-    res.render('register', { title: 'Registro', error: null });
-};
-
-// Registrar usuario
-exports.registerUser = async (req, res) => {
-    const { name, email, password, role } = req.body;
+// Crear un nuevo usuario
+exports.createUser = async (req, res) => {
+    const { name, email, age, role } = req.body;
     try {
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.render('register', { title: 'Registro', error: 'El correo ya está en uso' });
-        }
-
-        // Encriptar la contraseña
-        //const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new User({ name, email, password, role });
+        const newUser = new User({ name, email, age, role });
         await newUser.save();
-        res.redirect('/login');
+        res.redirect('/users');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error en el registro');
+        res.status(500).send('Error al crear el usuario');
     }
 };
 
-// Mostrar formulario de login
-exports.showLoginForm = (req, res) => {
-    res.render('login', { title: 'Login', error: null });
-};
-
-// Iniciar sesión
-exports.loginUser = async (req, res) => {
-    const { email, password } = req.body;
+// Obtener el formulario de edición de un usuario
+exports.getEditUser = async (req, res) => {
+    const { id } = req.params;
     try {
-        const user = await User.findOne({ email });
-        if (!user || user.password !== password) {  // Comparar la contraseña en texto claro
-            return res.render('login', { title: 'Login', error: 'Credenciales incorrectas' });
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send('Usuario no encontrado');
         }
-        req.session.user = user; // Aquí puedes almacenar la información del usuario en la sesión
-        
-        if (user.role === "admin"){
-            return res.redirect('/admin/dashboard');
-        } else{
-            return res.redirect('/user/movies');
-        }
+        res.render('editUser', { title: 'Editar Usuario', user });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error en el inicio de sesión');
+        res.status(500).send('Error al obtener el usuario para editar');
     }
 };
 
-// Cerrar sesión
-exports.logoutUser = (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/login');
-    });
+// Actualizar un usuario
+exports.updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { name, email, age, role } = req.body;
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            id, 
+            { name, email, age, role }, 
+            { new: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+        res.redirect('/users');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al actualizar el usuario');
+    }
+};
+
+// Eliminar un usuario
+exports.deleteUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+        res.redirect('/users'); // Redirige a la lista de usuarios
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al eliminar el usuario');
+    }
 };

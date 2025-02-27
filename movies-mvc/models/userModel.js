@@ -1,21 +1,22 @@
+// models/userModel.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { 
+    name: {type: String, required: true},
+    email: {type: String, required: true, unique: true},
+    password: {type: String, required: true}, // Ya no usaremos bcrypt
+    age: {type: Number, required: true},
+    role: {
         type: String, 
-        required: true,
-        unique: true, 
-        match: [/\S+@\S+\.\S+/, 'Please use a valid email address'] // Validación de correo
-    },
-    password: { type: String, required: true },
-    role: { 
-        type: String, 
-        required: true, 
-        enum: ['user', 'admin'], // Role limitado a "user" o "admin"
-        default: 'user' 
+        enum: ['usuario', 'administrador'],
+        default: 'usuario'
     }
 });
+
+// Método simplificado para verificar el password
+userSchema.methods.comparePassword = function(candidatePassword) {
+    return this.password === candidatePassword; // Comparación directa
+};
 
 const User = mongoose.model('User', userSchema);
 

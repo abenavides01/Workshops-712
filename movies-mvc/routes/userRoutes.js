@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { isAuthenticated } = require('../middleware/authMiddleWare');
 
-// Rutas de autenticación
-router.get('/register', userController.showRegisterForm);
-router.post('/register', userController.registerUser);
+// Proteger todas las rutas
+router.use(isAuthenticated);
 
-router.get('/login', userController.showLoginForm);
-router.post('/login', userController.loginUser);
-
-router.get('/logout', userController.logoutUser);
+// Rutas de usuario
+router.get('/', userController.getAllUsers);
+router.post('/', userController.createUser);
+router.get('/:id/edit', userController.getEditUser);
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;
