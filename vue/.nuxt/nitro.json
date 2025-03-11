@@ -1,0 +1,17 @@
+{
+  "date": "2025-03-11T00:44:56.113Z",
+  "preset": "nitro-dev",
+  "framework": {
+    "name": "nuxt",
+    "version": "3.15.4"
+  },
+  "versions": {
+    "nitro": "2.11.2"
+  },
+  "dev": {
+    "pid": 21112,
+    "workerAddress": {
+      "socketPath": "\\\\.\\pipe\\nitro\\C:\\Users\\andre\\OneDrive\\Documentos\\Workshops-712\\vue\\.nuxt\\dev\\worker-21112-1-2016-1.sock"
+    }
+  }
+}
