@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { isAuthenticated, isAdmin } = require('../middleware/authMiddleWare');
+const { isAuthenticated, isAdmin } = require('../middleware/auth');
 
 // Proteger todas las rutas
 router.use(isAuthenticated);
