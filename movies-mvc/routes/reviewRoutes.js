@@ -1,15 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const reviewController = require('../controllers/reviewController'); // Importa el controlador
+const reviewController = require('../controllers/reviewController');
 const { isAuthenticated } = require('../middleware/authMiddleWare');
 
 // Proteger todas las rutas
 router.use(isAuthenticated);
 
-// Crear una reseña
-router.post('/', reviewController.createReview); // Asegúrate de que createReview esté definido
+// Rutas API REST
+router.get('/', reviewController.getAllReviewsAPI);
+router.get('/:id', reviewController.getReviewByIdAPI);
+router.post('/', reviewController.createReviewAPI);
+router.put('/:id', reviewController.updateReviewAPI);
+router.delete('/:id', reviewController.deleteReviewAPI);
 
-// Eliminar una reseña
-router.delete('/:reviewId', reviewController.deleteReview); // Asegúrate de que deleteReview esté definido
+// Rutas de vistas
+router.post('/create', reviewController.createReview);
+router.delete('/:reviewId', reviewController.deleteReview);
 
 module.exports = router;

@@ -6,10 +6,14 @@ const { isAuthenticated } = require('../middleware/authMiddleWare');
 // Proteger todas las rutas
 router.use(isAuthenticated);
 
-// Agregar una película a favoritos
-router.post('/', favoriteController.addFavorite);
+// Rutas API REST
+router.get('/', favoriteController.getAllFavoritesAPI);
+router.get('/:id', favoriteController.getFavoriteByIdAPI);
+router.post('/', favoriteController.addFavoriteAPI);
+router.delete('/:id', favoriteController.removeFavoriteAPI);
 
-// Eliminar una película de favoritos
+// Rutas de vistas
+router.post('/add', favoriteController.addFavorite);
 router.delete('/:favoriteId', favoriteController.removeFavorite);
 
 module.exports = router;
